@@ -30,6 +30,7 @@ pipelines:
                     arguments:
                       - -c
                       - |
+                        #!/bin/bash
 
                         # Set variables
                         WORKDIR="/home/ubuntu/prime-square"
@@ -60,4 +61,6 @@ pipelines:
                         cp "$JAR_FILE" "$TARGET_JAR"
 
                         # Restart the service
-                        echo "Starting service $S
+                        echo "Starting service $SERVICE..."
+                        sudo systemctl start "$SERVICE"
+                    run_if: passed
