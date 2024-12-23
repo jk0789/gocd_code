@@ -30,7 +30,6 @@ pipelines:
                     arguments:
                       - -c
                       - |
-                        #!/bin/bash
 
                         # Set variables
                         WORKDIR="/home/ubuntu/prime-square"
