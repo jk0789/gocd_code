@@ -26,7 +26,7 @@ pipelines:
             timeout: 0
             tasks:
               - exec:
-                command: /bin/bash
+                    command: /bin/bash
                     arguments:
                       - -c
                       - >
