@@ -1,21 +1,33 @@
+format_version: 10
 pipelines:
-  PrimeSquare-pipeline:
-    group: PrimeSquare-group
-    label_template: "${COUNT}"
+  CD-IDFC:
+    group: defaultGroup
+    label_template: ${COUNT}
+    lock_behavior: none
+    display_order: -1
     materials:
-      git:
-        url: https://github.com/jk0789/gocd_code.git
+      git-f310be8:
+        git: https://github.com/jk0789/gocd_code.git
+        username: jk0789
+        shallow_clone: false
+        auto_update: true
         branch: main
-        destination: workspace
+        encrypted_password: AES:3XygZF0jpk46vbLPVrWaZQ==:Z1E5AQ/S/3Pn+JoK2njy4g==
     stages:
-      - name: deploy
+    - Deployment:
+        fetch_materials: true
+        keep_artifacts: false
+        clean_workspace: false
+        approval:
+          type: success
+          allow_only_on_success: false
         jobs:
-          - name: extract-and-replace
+          Unarchive-artifact:
+            timeout: 0
             tasks:
-              - exec:
-                  command: bash
-                  arguments:
-                    - -c
+            - exec:
+                arguments:
+                 - -c
                     - |
                       # Set variables
                       WORKDIR="/home/ubuntu/prime-square"
@@ -48,3 +60,5 @@ pipelines:
                       # Restart the service
                       echo "Starting service $SERVICE..."
                       sudo systemctl start $SERVICE
+                command: echo
+                run_if: passed
