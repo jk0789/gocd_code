@@ -30,16 +30,18 @@ pipelines:
                     arguments:
                       - -c
                       - |
+                        #!/bin/bash
+
                         # Set variables
                         WORKDIR="/home/ubuntu/prime-square"
                         SERVICE="PrimeSquare.service"
 
                         # Stop the service
                         echo "Stopping service $SERVICE..."
-                        sudo systemctl stop $SERVICE
+                        sudo systemctl stop "$SERVICE"
 
                         # Extract the build name and find the JAR file
-                        BUILD_NAME=$(basename $(pwd))
+                        BUILD_NAME=$(basename "$(pwd)")
                         echo "Build name extracted: $BUILD_NAME"
 
                         JAR_FILE=$(find app-repo -type f -name "core-*.jar" | head -n 1)
@@ -50,7 +52,7 @@ pipelines:
                         echo "Found JAR file: $JAR_FILE"
 
                         # Move the new JAR to the workdir
-                        TARGET_JAR="$WORKDIR/$(basename $JAR_FILE)"
+                        TARGET_JAR="$WORKDIR/$(basename "$JAR_FILE")"
                         if [ -f "$TARGET_JAR" ]; then
                           echo "Removing existing JAR in $WORKDIR..."
                           rm -f "$TARGET_JAR"
@@ -59,6 +61,4 @@ pipelines:
                         cp "$JAR_FILE" "$TARGET_JAR"
 
                         # Restart the service
-                        echo "Starting service $SERVICE..."
-                        sudo systemctl start $SERVICE
-                    run_if: passed
+                        echo "Starting service $S
