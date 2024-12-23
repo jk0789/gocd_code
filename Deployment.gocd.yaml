@@ -6,7 +6,7 @@ pipelines:
     lock_behavior: none
     display_order: -1
     materials:
-      - name: git-dd7042d
+      git-dd7042d:
         type: git
         attributes:
           url: https://github.com/jk0789/gocd_code.git
