@@ -8,6 +8,8 @@ pipelines:
     materials:
       git-05a4d8c:
         git: https://github.com/jk0789/gocd_code.git
+        username: jk0789
+        encrypted_password: AES:G+k5P/AskkV1LFOxFYEAog==:QmHcs+OTwQL/GwdPLp2WYw==     
         shallow_clone: false
         auto_update: true
         branch: main
