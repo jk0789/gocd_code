@@ -36,11 +36,7 @@ pipelines:
 
 
                         sudo systemctl stop ${SERVICE}
-
-
-
-                        
-
+                  
 
                         BUILD_NAME=$(basename $(pwd))
 
@@ -78,10 +74,6 @@ pipelines:
 
 
                         cp "${JAR_FILE}" "${TARGET_JAR}"
-
-
-
-                        
 
 
                         echo "Starting service ${SERVICE}..."
