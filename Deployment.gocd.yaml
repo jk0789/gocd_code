@@ -6,7 +6,8 @@ pipelines:
     lock_behavior: none
     display_order: -1
     materials:
-      - git:
+      git-dd7042d: # This is the name of the material
+        git: 
           url: https://github.com/jk0789/gocd_code.git
           username: jk0789
           encrypted_password: AES:G+k5P/AskkV1LFOxFYEAog==:QmHcs+OTwQL/GwdPLp2WYw==
@@ -60,4 +61,4 @@ pipelines:
 
                           # Restart the service
                           echo "Starting service ${SERVICE}..."
-    
+                          sudo systemctl start ${SERVICE}
