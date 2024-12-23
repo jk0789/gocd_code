@@ -1,0 +1,14 @@
+sudo install -m 0755 -d /etc/apt/keyrings
+curl https://download.gocd.org/GOCD-GPG-KEY.asc | sudo gpg --dearmor -o /etc/apt/keyrings/gocd.gpg
+sudo chmod a+r /etc/apt/keyrings/gocd.gpg
+echo "deb [signed-by=/etc/apt/keyrings/gocd.gpg] https://download.gocd.org /" | sudo tee /etc/apt/sources.list.d/gocd.list
+sudo apt-get update
+sudo apt-get install --install-recommends go-server
+sudo apt-get install --install-recommends go-agent
+sudo systemctl start go-server
+sudo systemctl start go-agent 
+sudo systemctl enable go-server
+sudo systemctl enable go-agent
+sudo systemctl status go-server
+sudo systemctl status go-agent
+
