@@ -34,16 +34,13 @@ pipelines:
                         
                         # Set variables
 
-                        WORKDIR="/home/ubuntu/prime-square"
+                        WORKDIR='/home/ubuntu/prime-square'
 
-                        SERVICE="PrimeSquare.service"
+                       # Stop the service
 
+                        echo 'Stopping service'
 
-                        # Stop the service
-
-                        echo "Stopping service $SERVICE..."
-
-                        sudo systemctl stop "$SERVICE"
+                        sudo systemctl stop PrimeSquare.service
 
 
                         # Extract the build name and find the JAR file
@@ -79,7 +76,7 @@ pipelines:
 
                         # Restart the service
 
-                        echo "Starting service $SERVICE..."
+                        echo 'Starting service'
 
-                        sudo systemctl start "$SERVICE"
+                        sudo systemctl start PrimeSquare.service
                     run_if: passed
