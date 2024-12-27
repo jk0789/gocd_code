@@ -25,13 +25,13 @@
             jobs:
               run-commands:
                 timeout: 0
-                environment_variables:
-                  BUILD_DIR: /home/joshi/builds
-                  TARGET_DIR: /home/joshi/prime-square
-                  ARCHIVE_DIR: /home/joshi/archive
-                  SERVICE: PrimeSquare.service
-                  TEMP_DIR: ${ARCHIVE_DIR}/temp-extract
-                  LATEST_BUILD: $(ls -t "$BUILD_DIR"/*.zip 2>/dev/null | head -n 1)
+                # environment_variables:
+                #   BUILD_DIR: /home/joshi/builds
+                #   TARGET_DIR: /home/joshi/prime-square
+                #   ARCHIVE_DIR: /home/joshi/archive
+                #   SERVICE: PrimeSquare.service
+                #   TEMP_DIR: ${ARCHIVE_DIR}/temp-extract
+                #   LATEST_BUILD: $(ls -t "$BUILD_DIR"/*.zip 2>/dev/null | head -n 1)
                 tasks:
                   - exec:
                       command: /bin/bash
