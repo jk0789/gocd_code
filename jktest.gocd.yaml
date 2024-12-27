@@ -51,7 +51,7 @@ pipelines:
                       echo "Found latest build: ${LATEST_BUILD}"
 
 
-                      # Check if target directory exists
+                      
 
                       if [ ! -d "$TARGET_DIR" ]; then
                         echo "Target directory ${TARGET_DIR} does not exist. Creating..."
@@ -61,7 +61,7 @@ pipelines:
                       else
                         echo "Target directory ${TARGET_DIR} exists. Preparing to extract to temporary location..."
 
-                        # Ensure archive and temp directories exist
+                        
                         mkdir -p "$TEMP_DIR"
                         mkdir -p "$ARCHIVE_DIR"
 
@@ -84,7 +84,7 @@ pipelines:
                       fi
 
 
-                      # Restart the service
+                      
 
                       echo "Restarting service ${SERVICE}..."
 
