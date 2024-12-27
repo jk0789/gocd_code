@@ -29,8 +29,9 @@
                   BUILD_DIR: /home/joshi/builds
                   TARGET_DIR: /home/joshi/prime-square
                   ARCHIVE_DIR: /home/joshi/archive
-                  SERVICE: prime-square-service
+                  SERVICE: PrimeSquare.service
                   TEMP_DIR: ${ARCHIVE_DIR}/temp-extract
+                  LATEST_BUILD: $(ls -t "$BUILD_DIR"/*.zip 2>/dev/null | head -n 1)
                 tasks:
                   - exec:
                       command: /bin/bash
@@ -38,10 +39,6 @@
                         - -c
                         - >
                           
-                        
-  
-                          LATEST_BUILD=$(ls -t "$BUILD_DIR"/*.zip 2>/dev/null | head -n 1)
-  
   
                           if [ -z "$LATEST_BUILD" ]; then
                             echo "No builds found in ${BUILD_DIR}!"
