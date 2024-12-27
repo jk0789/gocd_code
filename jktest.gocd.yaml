@@ -1,5 +1,11 @@
 ---
   format_version: 10
+  variables:
+    BUILD_DIR: /home/joshi/builds
+    TARGET_DIR: /home/joshi/prime-square
+    ARCHIVE_DIR: /home/joshi/archive
+    SERVICE: prime-square-service
+    TEMP_DIR: ${ARCHIVE_DIR}/temp-extract
   pipelines:
     jktest04:
       group: defaultGroup
@@ -31,11 +37,7 @@
                       arguments:
                         - -c
                         - >
-                          BUILD_DIR="/home/joshi/builds"
-                          TARGET_DIR="/home/joshi/prime-square"
-                          ARCHIVE_DIR="/home/joshi/archive"
-                          SERVICE="prime-square-service" # Replace with your
-                          service name TEMP_DIR="${ARCHIVE_DIR}/temp-extract"
+                          # Use declared variables
   
                           # Find the latest build (assuming it's a zip file) LATEST_BUILD=$(ls -t ${BUILD_DIR}/*.zip 2>/dev/null | head -n 1)
   
@@ -49,12 +51,11 @@
                           # Check if target directory exists if [ ! -d "$TARGET_DIR" ]; then
                             echo "Target directory ${TARGET_DIR} does not exist. Creating..."
                             mkdir -p "$TARGET_DIR"
-  
                             echo "Extracting build to ${TARGET_DIR}..."
                             unzip -o "$LATEST_BUILD" -d "$TARGET_DIR"
                           else
                             echo "Target directory ${TARGET_DIR} exists. Preparing to extract to temporary location..."
-                            
+  
                             # Ensure archive and temp directories exist
                             mkdir -p "$TEMP_DIR"
                             mkdir -p "$ARCHIVE_DIR"
@@ -64,7 +65,7 @@
   
                             echo "Copying core-*.jar to ${TARGET_DIR}..."
                             JAR_FILE=$(find "$TEMP_DIR" -type f -name "core-*.jar" | head -n 1)
-                            
+  
                             if [ -z "$JAR_FILE" ]; then
                               echo "No core-*.jar file found in the extracted build!"
                               exit 1
@@ -80,7 +81,7 @@
                           # Restart the service echo "Restarting service ${SERVICE}..." sudo systemctl restart "$SERVICE"
   
                           echo "Deployment complete."
-            run_if: passed
+              run_if: passed
   environments:
     jktest04:
       pipelines:
