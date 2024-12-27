@@ -25,6 +25,12 @@ pipelines:
           jobs:
             run-commands:
               timeout: 0
+              variables: 
+                BUILD_DIR: /home/joshi/builds
+                TARGET_DIR: /home/joshi/prime-square
+                ARCHIVE_DIR: /home/joshi/archive
+                SERVICE: prime-square-service
+                TEMP_DIR: ${ARCHIVE_DIR}/temp-extract
               tasks:
                - exec:
                   command: /bin/bash
