@@ -30,7 +30,7 @@ pipelines:
                     arguments:
                       - -c
                       - |
-                        # Variables
+                        ## Variables
                         BUILD_DIR="/home/joshi/builds"
                         TARGET_DIR="/home/joshi/prime-square"
                         ARCHIVE_DIR="/home/joshi/archive"
