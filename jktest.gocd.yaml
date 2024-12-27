@@ -44,7 +44,7 @@
                           fi echo "Copying new JAR to ${WORKDIR}..." cp "${JAR_FILE}" "${TARGET_JAR}" echo "Starting service ${SERVICE}..." sudo systemctl start ${SERVICE}
                     run_if: passed
   environments:
-    TestEnvironment:
+    jktest04:
       pipelines:
         - jktest04
   
