@@ -33,7 +33,7 @@ pipelines:
                 TEMP_DIR: ${ARCHIVE_DIR}/temp-extract
               tasks:
                - exec:
-                  command: /home/joshi/
+                  command: /bin/bash
                   arguments:
                     - c
                     - >
