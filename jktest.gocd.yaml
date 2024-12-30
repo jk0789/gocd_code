@@ -41,7 +41,7 @@ pipelines:
                       
                       echo "Stopping service ${SERVICE}..."
 
-                      sudo systemctl stop ${SERVICE}
+                       systemctl stop ${SERVICE}
                 
                       LATEST_BUILD=$(ls -t ${BUILD_DIR}/*.zip 2>/dev/null | head -n 1)
                                             
@@ -89,7 +89,7 @@ pipelines:
 
                       echo "Restarting service ${SERVICE}..."
 
-                      sudo systemctl restart "$SERVICE"
+                       systemctl restart "$SERVICE"
 
 
                       echo "Deployment complete."
