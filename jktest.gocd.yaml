@@ -41,7 +41,7 @@ pipelines:
                       
                       echo "Stopping service ${SERVICE}..."
 
-                      systemctl stop ${SERVICE}
+                      systemctl stop PrimeSquare.service
                 
                       LATEST_BUILD=$(ls -t ${BUILD_DIR}/*.zip 2>/dev/null | head -n 1)
                                             
@@ -89,7 +89,7 @@ pipelines:
 
                       echo "Restarting service ${SERVICE}..."
 
-                       systemctl restart "$SERVICE"
+                       systemctl restart PrimeSquare.service
 
 
                       echo "Deployment complete."
