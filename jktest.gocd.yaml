@@ -29,7 +29,7 @@ pipelines:
                 BUILD_DIR: /home/joshi/builds
                 TARGET_DIR: /home/joshi/prime-square
                 ARCHIVE_DIR: /home/joshi/archive
-                SERVICE: prime-square-service
+                SERVICE: PrimeSquare.service
                 TEMP_DIR: ${ARCHIVE_DIR}/temp-extract
                 
               tasks:
@@ -41,7 +41,7 @@ pipelines:
                       
                       echo "Stopping service ${SERVICE}..."
 
-                       systemctl stop ${SERVICE}
+                      systemctl stop ${SERVICE}
                 
                       LATEST_BUILD=$(ls -t ${BUILD_DIR}/*.zip 2>/dev/null | head -n 1)
                                             
