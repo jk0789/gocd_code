@@ -39,9 +39,9 @@ pipelines:
                       - stop
                       - PrimeSquare.service
                 - exec:
-                    command: bash
+                    command: /bin/bash
                     arguments:
-                      - bash
+                      - -c
                       - >
                         echo "Processing build..."
 
