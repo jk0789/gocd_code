@@ -39,10 +39,10 @@ pipelines:
                       - stop
                       - PrimeSquare.service
                 - exec:
-                    command: /bin/bash
+                    command: bash
                     arguments:
-                      - -c
-                      - |
+                      - bash
+                      - >
                         echo "Processing build..."
 
                         LATEST_BUILD=$(ls -t ${BUILD_DIR}/*.zip 2>/dev/null | head -n 1)
