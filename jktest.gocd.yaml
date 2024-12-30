@@ -36,7 +36,7 @@ pipelines:
                - exec:
                   command: /bin/bash
                   arguments:
-                    - c
+                    - -c
                     - >
                       
                       echo "Stopping service ${SERVICE}..."
