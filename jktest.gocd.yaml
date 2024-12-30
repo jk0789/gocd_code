@@ -42,18 +42,18 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - >
+                      - |
                         echo "Processing build..."
-
+                        
                         LATEST_BUILD=$(ls -t ${BUILD_DIR}/*.zip 2>/dev/null | head -n 1)
-
+                        
                         if [ -z "$LATEST_BUILD" ]; then
                           echo "No builds found in ${BUILD_DIR}!"
                           exit 1
                         fi
-
+                        
                         echo "Found latest build: ${LATEST_BUILD}"
-
+                        
                         if [ ! -d "$TARGET_DIR" ]; then
                           echo "Target directory ${TARGET_DIR} does not exist. Creating..."
                           mkdir -p "$TARGET_DIR"
@@ -67,18 +67,18 @@ pipelines:
                           unzip -o "$LATEST_BUILD" -d "$TEMP_DIR"
                           echo "Copying core-*.jar to ${TARGET_DIR}..."
                           JAR_FILE=$(find "$TEMP_DIR" -type f -name "core-*.jar" | head -n 1)
-
+                          
                           if [ -z "$JAR_FILE" ]; then
                             echo "No core-*.jar file found in the extracted build!"
                             exit 1
                           fi
-
+                          
                           echo "Found JAR file: $JAR_FILE"
                           cp "$JAR_FILE" "$TARGET_DIR"
                           echo "Cleaning up temporary directory..."
                           rm -rf "$TEMP_DIR"
                         fi
-
+                        
                         echo "Build processing complete."
                 - exec:
                     command: sudo
