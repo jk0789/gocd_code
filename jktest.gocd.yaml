@@ -39,7 +39,7 @@ pipelines:
                       - stop
                       - PrimeSquare.service
                 - exec:
-                    command: /bin/bash
+                    command: sudo
                     arguments:
                       - -c
                       - |
