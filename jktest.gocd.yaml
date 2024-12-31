@@ -77,7 +77,7 @@ pipelines:
                         fi
                         
                         echo "Build processing complete."
-                    command: sudo    
+                    command: sudo /bin/bash   
                 - exec:
                     command: sudo
                     arguments:
