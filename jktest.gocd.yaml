@@ -36,8 +36,7 @@ pipelines:
                       - systemctl
                       - stop
                       - PrimeSquare.service
-                - exec:
-                    command: /bin/bash
+                - exec:            
                     arguments:
                       - -c
                       - |
@@ -78,6 +77,7 @@ pipelines:
                         fi
                         
                         echo "Build processing complete."
+                    command: sudo    
                 - exec:
                     command: sudo
                     arguments:
