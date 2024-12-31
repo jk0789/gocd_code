@@ -7,7 +7,7 @@ pipelines:
     lock_behavior: none
     display_order: -1
     materials:
-      git-05a4d8c:
+      git-5885404:
         git: https://github.com/jk0789/gocd_code.git
         username: jk0789
         encrypted_password: AES:G+k5P/AskkV1LFOxFYEAog==:QmHcs+OTwQL/GwdPLp2WYw==
@@ -39,7 +39,7 @@ pipelines:
                       - stop
                       - PrimeSquare.service
                 - exec:
-                    command: sudo
+                    command: /bin/bash
                     arguments:
                       - -c
                       - |
