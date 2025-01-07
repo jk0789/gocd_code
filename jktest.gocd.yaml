@@ -30,7 +30,7 @@ pipelines:
                 SERVICE: PrimeSquare.service
               tasks:
                 - exec:
-                    command: sudo /bin/bash
+                    command: /bin/bash
                     arguments:
                       - -c
                       - |
@@ -72,7 +72,7 @@ pipelines:
 
                         sudo mkdir -p "${BE_TEMP_DIR}" "${BE_ARCHIVE_DIR}" || { echo "Failed to create backend directories"; exit 1; }
 
-                        unzip -o "${BE_ZIP}" -d "${BE_TEMP_DIR}" || { echo "Failed to unzip ps_be"; exit 1; }
+                        sudo unzip -o "${BE_ZIP}" -d "${BE_TEMP_DIR}" || { echo "Failed to unzip ps_be"; exit 1; }
 
 
                         JAR_FILE=$(find "${BE_TEMP_DIR}" -type f -name "core-*.jar" | head -n 1)
@@ -88,7 +88,7 @@ pipelines:
 
                         sudo mkdir -p "${BE_TARGET_DIR}" || { echo "Failed to create ${BE_TARGET_DIR}"; exit 1; }
 
-                        cp "${JAR_FILE}" "${BE_TARGET_DIR}" || { echo "Failed to copy JAR file"; exit 1; }
+                        sudo cp "${JAR_FILE}" "${BE_TARGET_DIR}" || { echo "Failed to copy JAR file"; exit 1; }
 
                         sudo rm -rf "${BE_TEMP_DIR}" || { echo "Failed to clean up BE temp dir"; exit 1; }
 
