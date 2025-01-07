@@ -30,7 +30,7 @@ pipelines:
                 SERVICE: PrimeSquare.service
               tasks:
                 - exec:
-                    command: /bin/bash
+                    command: sudo /bin/bash
                     arguments:
                       - -c
                       - |
