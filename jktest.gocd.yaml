@@ -10,7 +10,7 @@ pipelines:
       - name: FRESH_DEPLOYMENT 
         description: "Is this a fresh deployment? (YES/NO)" 
         type: string 
-        default_value: "NO"
+        default_value: "YES"
     materials:
       git-backend:
         git: https://github.com/jk0789/gocd_code.git
