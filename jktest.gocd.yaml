@@ -5,17 +5,14 @@ pipelines:
     label_template: "${COUNT}"
     lock_behavior: none
     display_order: 1
-    parameters:
-      - name: FRESH_DEPLOYMENT
-        description: Is this a fresh deployment? (YES/NO)
-        type: string
-        default_value: YES
     materials:
       git-backend:
         git: https://github.com/jk0789/gocd_code.git
         shallow_clone: false
         auto_update: true
         branch: main
+  parameters:
+    FRESH_deployment: YES/NO      
     stages:
       - name: Deploy-Backend
         fetch_materials: true
@@ -66,7 +63,7 @@ pipelines:
 
                       echo "Found backend zip: ${BE_ZIP}"
 
-                      if [ "${FRESH_DEPLOYMENT}" = "YES" ]; then
+                      if [ ${FRESH_DEPLOYMENT} = YES ]; then
                         echo "Performing fresh deployment..."
                         sudo mkdir -p "${BE_TARGET_DIR}" || { echo "Failed to create ${BE_TARGET_DIR}"; exit 1; }
                         sudo unzip -o "${BE_ZIP}" -d "${BE_TARGET_DIR}" || { echo "Failed to unzip ps_be"; exit 1; }
