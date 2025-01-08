@@ -11,8 +11,12 @@ pipelines:
         shallow_clone: false
         auto_update: true
         branch: main
-  parameters:
-    FRESH_deployment: YES/NO      
+    parameters:
+      - name: FRESH_DEPLOYMENT
+        description: Is this a fresh deployment? (YES/NO)
+        type: string
+        default_value: YES
+
     stages:
       - name: Deploy-Backend
         fetch_materials: true
