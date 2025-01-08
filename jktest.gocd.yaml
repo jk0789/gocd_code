@@ -6,11 +6,11 @@ pipelines:
     label_template: ${COUNT}
     lock_behavior: none
     display_order: 1
-    parameters: 
-      - name: FRESH_DEPLOYMENT 
-        description: "Is this a fresh deployment? (YES/NO)" 
-        type: string 
-        default_value: "YES"
+    parameters:
+      - name: FRESH_DEPLOYMENT
+        description: Is this a fresh deployment? (YES/NO)
+        type: string
+        default_value: YES
     materials:
       git-backend:
         git: https://github.com/jk0789/gocd_code.git
@@ -44,29 +44,42 @@ pipelines:
                       - |
                         echo "Exporting environment variables..."
 
+
                         export BUILD_DIR=/home/joshi/builds
+
 
                         export BE_TARGET_DIR=/home/joshi/prime-square
 
+
                         export UI_TARGET_DIR=/var/www/html
+
 
                         export BE_ARCHIVE_DIR=/home/joshi/archive
 
+
                         export UI_ARCHIVE_DIR=/home/joshi/ui-archive
+
 
                         export BE_TEMP_DIR=${BE_ARCHIVE_DIR}/temp-extract
 
+
                         export UI_TEMP_DIR=${UI_ARCHIVE_DIR}/temp-extract
+
 
                         export SERVICE=PrimeSquare.service
 
+
                         echo "Checking build directory contents..."
+
 
                         ls -lh ${BUILD_DIR}
 
+
                         echo "Processing backend (ps_be)..."
 
+
                         BE_ZIP=$(ls ${BUILD_DIR}/ps_be*.zip 2>/dev/null | head -n 1)
+
 
 
                         if [ -z "${BE_ZIP}" ]; then
@@ -75,7 +88,9 @@ pipelines:
                         fi
 
 
+
                         echo "Found backend zip: ${BE_ZIP}"
+
 
 
                         if [ "${FRESH_DEPLOYMENT}" = "YES" ]; then
@@ -84,6 +99,7 @@ pipelines:
                           sudo unzip -o "${BE_ZIP}" -d "${BE_TARGET_DIR}" || { echo "Failed to unzip ps_be"; exit 1; } 
                         else 
                           echo "Performing regular deployment..." sudo systemctl stop ${SERVICE} || { echo "Failed to stop ${SERVICE}"; exit 1; } 
+                          
                           JAR_FILE=$(find "${BE_TEMP_DIR}" -type f -name "core-*.jar" | head -n 1) 
                           if [ -z "${JAR_FILE}" ]; then 
                             echo "No core-*.jar file found in the ps_be zip!" 
@@ -94,26 +110,33 @@ pipelines:
                           sudo systemctl start ${SERVICE} || { echo "Failed to start ${SERVICE}"; exit 1; } 
                         fi
 
+
                         echo "Making wrapper.sh executable..."
+
                         sudo chmod +x "${BE_TARGET_DIR}/wrapper.sh" || { echo "Failed to make wrapper.sh executable"; exit 1; }
 
+
                         sudo chmod +x "${DB_SCRIPTS_DIR}/*"
- 
+
+
                         echo "Executing database scripts..."
-                        
- 
+
+
+
                         echo "Deployment complete."
+
 
 
                         echo "Restarting backend service..."
 
+
                         sudo systemctl restart ${SERVICE} || { echo "Failed to restart ${SERVICE}"; exit 1; }
+
 
 
                         echo "Backend deployment complete."
               resources:
                 - joshi
-               
 environments:
   jktest04:
     pipelines:
