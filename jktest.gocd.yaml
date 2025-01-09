@@ -14,8 +14,7 @@ pipelines:
         branch: main
     parameters:
       FRESH_deployment: YES/NO
-      type: boolean
-      default_value: YES    
+          
     stages:
       - Deploy-Backend:
           fetch_materials: true
