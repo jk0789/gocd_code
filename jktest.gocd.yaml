@@ -120,10 +120,8 @@ pipelines:
               resources:
                 - joshi
     parameters:
-      - name: DEPLOY_OPTION
-        description: Choose deployment type (YES or NO)
-        type: string
-        default_value: YES           
+      - DEPLOY_OPTION: YES/NO
+                   
 environments:
   jktest04:
     pipelines:
