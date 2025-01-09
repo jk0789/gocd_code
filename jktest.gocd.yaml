@@ -14,7 +14,7 @@ pipelines:
         branch: main
     parameters:
       FRESH_deployment: YES/NO
-      type: string
+      type: boolean
       default_value: YES    
     stages:
       - Deploy-Backend:
@@ -35,7 +35,7 @@ pipelines:
                 DB_SCRIPTS_DIR: /home/joshi/prime-square/database-scripts
                 DB_USER: psdbadmin
                 DB_PASS: 6%EOm@Te1sb19Th6
-                SFTP_HOST: 172.16.7.110
+                SFTP_HOST: 172.16.7.116
                 SFTP_USER: surya
                 SFTP_UPLOADS_DIR: uploads
               tasks:
@@ -65,7 +65,7 @@ pipelines:
                         export DB_SCRIPTS_DIR=/home/joshi/prime-square/database-scripts
                         export DB_USER=psdbadmin
                         export DB_PASS=6%EOm@Te1sb19Th6
-                        export SFTP_HOST=172.16.7.110
+                        export SFTP_HOST=172.16.7.116
                         export SFTP_USER=surya
                         export SFTP_KEY=/var/go/.ssh/id_rsa
                         export SFTP_UPLOADS_DIR=uploads
