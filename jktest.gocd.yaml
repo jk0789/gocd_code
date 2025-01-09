@@ -32,7 +32,7 @@ pipelines:
                 DB_USER: psdbadmin
                 DB_PASS: 6%EOm@Te1sb19Th6
                 SFTP_HOST: 172.16.7.110
-                SFTP_USER: sftp_gocd
+                SFTP_USER: surya
                 SFTP_UPLOADS_DIR: uploads
               tasks:
                 - exec:
@@ -62,7 +62,7 @@ pipelines:
                         export DB_USER=psdbadmin
                         export DB_PASS=6%EOm@Te1sb19Th6
                         export SFTP_HOST=172.16.7.110
-                        export SFTP_USER=sftp_gocd
+                        export SFTP_USER=surya
                         export SFTP_KEY=/var/go/.ssh/id_rsa
                         export SFTP_UPLOADS_DIR=uploads
 
