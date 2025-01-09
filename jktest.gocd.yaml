@@ -92,7 +92,7 @@ pipelines:
                           echo "BUILD_DIR exists. Using existing ${BUILD_DIR}..."
                         fi
  
-                        echo "Checking for existing ps_be_*.zip files in BUILD_DIR..."
+                        echo "Checking for existing backend files in BUILD_DIR..."
                          if ls "${BUILD_DIR}/ps_be_*.zip" > /dev/null 2>&1; then
                           echo "Found existing ps_be_*.zip files. Removing them..."
                           sudo rm -f "${BUILD_DIR}/ps_be_*.zip" || { echo "Failed to remove existing zip files"; exit 1; }
@@ -103,7 +103,7 @@ pipelines:
                         echo "Accessing SFTP machine to fetch the backend zip file..."
                         sftp -o StrictHostKeyChecking=no -i /var/go/.ssh/id_rsa ${SFTP_USER}@${SFTP_HOST} <<EOF
                         cd ${SFTP_UPLOADS_DIR}
-                        get ps_be_*.zip ${BUILD_DIR}/backend.zip
+                        get ps_be_*.zip ${BUILD_DIR}
                         bye
                         EOF
                         if [ $? -ne 0 ]; then
@@ -122,19 +122,14 @@ pipelines:
                         echo "Changing permissions of BE_TARGET_DIR to joshi:joshi..."
                         sudo chown -R joshi:joshi "${BE_TARGET_DIR}" || { echo "Failed to change permissions of BE_TARGET_DIR"; exit 1; }
  
-                        echo "Copying and unzipping the backend artifacts to BE_TARGET_DIR..."
-                        sudo cp "${BUILD_DIR}/backend.zip" "${BE_TARGET_DIR}/" || { echo "Failed to copy zip file"; exit 1; }
-                        sudo unzip -o "${BE_TARGET_DIR}/backend.zip" -d "${BE_TARGET_DIR}" || { echo "Failed to unzip backend.zip"; exit 1; }
- 
-                        echo "Removing the zip file from BE_TARGET_DIR..."
-                        sudo rm -f "${BE_TARGET_DIR}/backend.zip"
+                        echo "Unzipping the backend artifacts to BE_TARGET_DIR..."
+                        sudo unzip -o "${BUILD_DIR}/ps_be_*.zip" -d "${BE_TARGET_DIR}" || { echo "Failed to unzip backend.zip"; exit 1; }
  
                         echo "Listing extracted files in BE_TARGET_DIR..."
                         ls -l "${BE_TARGET_DIR}"
  
                         echo "Changing permissions of BE_TARGET_DIR and BUILD_DIR to joshi:joshi..."
-                        sudo chown -R joshi:joshi "${BE_TARGET_DIR}" || { echo "Failed to change permissions of BE_TARGET_DIR"; exit 1; }
-                        sudo chown -R joshi:joshi "${BUILD_DIR}" || { echo "Failed to change permissions of BUILD_DIR"; exit 1; }
+                        sudo chown -R joshi:joshi "${BE_TARGET_DIR}" || { echo "Failed to change permissions of BE_TARGET_DIR"; exit 1; }                
  
                         echo "Checking and copying service file if needed..."
                         if [ ! -f /etc/systemd/system/${SERVICE} ]; then
