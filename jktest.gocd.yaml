@@ -28,6 +28,12 @@ pipelines:
                 BE_ARCHIVE_DIR: /home/joshi/archive
                 BE_TEMP_DIR: ${BE_ARCHIVE_DIR}/temp-extract
                 SERVICE: PrimeSquare.service
+                DB_SCRIPTS_DIR: /home/joshi/prime-square/database-scripts
+                DB_USER: psdbadmin
+                DB_PASS: 6%EOm@Te1sb19Th6
+                SFTP_HOST: 172.16.7.110
+                SFTP_USER: sftp_gocd
+                SFTP_UPLOADS_DIR: uploads
               tasks:
                 - exec:
                     command: /bin/bash
@@ -51,6 +57,14 @@ pipelines:
                         export UI_TEMP_DIR=${UI_ARCHIVE_DIR}/temp-extract
 
                         export SERVICE=PrimeSquare.service
+
+                        export DB_SCRIPTS_DIR=/home/joshi/prime-square/database-scripts
+                        export DB_USER=psdbadmin
+                        export DB_PASS=6%EOm@Te1sb19Th6
+                        export SFTP_HOST=172.16.7.110
+                        export SFTP_USER=sftp_gocd
+                        export SFTP_KEY=/var/go/.ssh/id_rsa
+                        export SFTP_UPLOADS_DIR=uploads
 
                         echo "Checking build directory contents..."
 
