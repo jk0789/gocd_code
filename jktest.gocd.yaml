@@ -11,7 +11,7 @@ pipelines:
         git: https://github.com/jk0789/gocd_code.git
         shallow_clone: false
         auto_update: true
-        branch: main
+        branch: final
     stages:
       - Deploy-Backend:
           fetch_materials: true
