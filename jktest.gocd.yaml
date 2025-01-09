@@ -69,7 +69,16 @@ pipelines:
                         echo "Creating build directory..."
                         mkdir -p "${BUILD_DIR}" || { echo "Failed to create ${BUILD_DIR}"; exit 1; }
                         
-                        echo "Checking build directory contents..."
+                        echo "Downloading backend zip file from SFTP..."
+                        sftp -o StrictHostKeyChecking=no -i "${SFTP_KEY}" ${SFTP_USER}@${SFTP_HOST} <<EOF
+                        cd ${SFTP_UPLOADS_DIR}
+                        get ps_be*.zip ${BUILD_DIR}/ps_be_backend.zip
+                        bye
+                        EOF
+                        if [ $? -ne 0 ]; then
+                          echo "Failed to fetch ps_be_backend.zip from SFTP."
+                          exit 1
+                        fi
 
                         ls -lh ${BUILD_DIR}
 
