@@ -66,6 +66,9 @@ pipelines:
                         export SFTP_KEY=/var/go/.ssh/id_rsa
                         export SFTP_UPLOADS_DIR=uploads
 
+                        echo "Creating build directory..."
+                        mkdir -p "${BUILD_DIR}" || { echo "Failed to create ${BUILD_DIR}"; exit 1; }
+                        
                         echo "Checking build directory contents..."
 
                         ls -lh ${BUILD_DIR}
