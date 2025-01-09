@@ -38,7 +38,7 @@ pipelines:
                   command: /bin/bash
                   arguments:
                     - -c
-                    - |
+                    - >
                       echo "Accessing SFTP machine to fetch the backend zip file..."
                       echo "Creating build directory..."
                       mkdir -p "${BUILD_DIR}" || { echo "Failed to create ${BUILD_DIR}"; exit 1; }
