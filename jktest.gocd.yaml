@@ -12,6 +12,10 @@ pipelines:
         shallow_clone: false
         auto_update: true
         branch: main
+    parameters:
+      FRESH_deployment: YES/NO
+      type: string
+      default_value: YES    
     stages:
       - Deploy-Backend:
           fetch_materials: true
@@ -118,11 +122,7 @@ pipelines:
 
                         echo "Backend deployment complete."
               resources:
-                - joshi
-    parameters:
-      FRESH_deployment: YES/NO
-      type: string
-      default_value: YES                   
+                - joshi                   
 environments:
   jktest04:
     pipelines:
