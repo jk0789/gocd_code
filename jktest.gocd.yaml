@@ -4,8 +4,6 @@ pipelines:
   jktest04:
     group: deployment-group
     label_template: ${COUNT}
-    parameters:
-      - name: DEPLOY_OPTION
     lock_behavior: none
     display_order: 1
     materials:
@@ -121,7 +119,11 @@ pipelines:
                         echo "Backend deployment complete."
               resources:
                 - joshi
-               
+    parameters:
+      - name: DEPLOY_OPTION
+        description: Choose deployment type (YES or NO)
+        type: string
+        default_value: YES           
 environments:
   jktest04:
     pipelines:
