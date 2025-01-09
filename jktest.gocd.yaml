@@ -6,9 +6,6 @@ pipelines:
     label_template: ${COUNT}
     parameters:
       - name: DEPLOY_OPTION
-        description: Choose deployment type (YES or NO)
-        type: string
-        default_value: YES
     lock_behavior: none
     display_order: 1
     materials:
