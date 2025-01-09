@@ -157,7 +157,8 @@ pipelines:
                         mysql < "${DB_SCRIPTS_DIR}/ddl_create_scripts.sql" -u ${DB_USER} -p${DB_PASS} -h 172.16.7.115 || { echo "Failed to execute ddl_create_scripts.sql"; exit 1; }
                         mysql < "${DB_SCRIPTS_DIR}/dml_insert_scripts.sql" -u ${DB_USER} -p${DB_PASS} -h 172.16.7.115 || { echo "Failed to execute dml_insert_scripts.sql"; exit 1; }
                         mysql < "${DB_SCRIPTS_DIR}/ps_index_create.sql" -u ${DB_USER} -p${DB_PASS} -h 172.16.7.115 || { echo "Failed to execute ps_index_create.sql"; exit 1; }
- 
+
+                        sudo chown -R joshi:joshi "${BE_TARGET_DIR}" || { echo "Failed to change permissions of BE_TARGET_DIR"; exit 1; }
                         echo "starting service..."
                         sudo systemctl start ${SERVICE} || { echo "Failed to start ${SERVICE}"; exit 1; }
                         sudo systemctl status ${SERVICE}
