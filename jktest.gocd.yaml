@@ -120,8 +120,7 @@ pipelines:
               resources:
                 - joshi
     parameters:
-      - DEPLOY_OPTION: YES/NO
-                   
+      FRESH_deployment: YES/NO                   
 environments:
   jktest04:
     pipelines:
