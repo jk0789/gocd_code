@@ -114,7 +114,7 @@ pipelines:
                         echo "Checking and creating BE_TARGET_DIR if needed..."
                         if [ ! -d "${BE_TARGET_DIR}" ]; then
                           echo "BE_TARGET_DIR does not exist. Creating ${BE_TARGET_DIR}..."
-                          mkdir -p "${BE_TARGET_DIR}" || { echo "Failed to create ${BE_TARGET_DIR}"; exit 1; }
+                          sudo mkdir -p "${BE_TARGET_DIR}" || { echo "Failed to create ${BE_TARGET_DIR}"; exit 1; }
                         else
                           echo "BE_TARGET_DIR exists. Using existing ${BE_TARGET_DIR}..."
                         fi
