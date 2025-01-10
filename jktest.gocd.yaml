@@ -61,7 +61,7 @@ pipelines:
                         export DB_USER=psdbadmin
                         export DB_PASS=6%EOm@Te1sb19Th6
 
-                        DEPLOYMENT_TYPE=$(cat /home/joshi/deployment_type.txt)
+                        DEPLOYMENT_TYPE=$(cat deployment_type.txt)
 
                         if [ "$DEPLOYMENT_TYPE" == "FRESH_DEPLOYMENT" ]; then
                           echo "Fresh deployment detected. Setting up environment..."
@@ -122,15 +122,17 @@ pipelines:
                         export SFTP_UPLOADS_DIR=uploads
                         
 
-                        DEPLOYMENT_TYPE=$(cat /home/joshi/deployment_type.txt)
+                        DEPLOYMENT_TYPE=$(cat deployment_type.txt)
                         if [ "$DEPLOYMENT_TYPE" == "REGULAR_DEPLOYMENT" ]; then
                           
                           echo "Accessing SFTP machine to fetch the backend zip file..."
+
                           sftp -o StrictHostKeyChecking=no -i /var/go/.ssh/id_rsa ${SFTP_USER}@${SFTP_HOST} <<EOF
                           cd ${SFTP_UPLOADS_DIR}
                           get ps_be_*.zip ${BUILD_DIR}
                           bye
                           EOF
+
                           if [ $? -ne 0 ]; then
                             echo "Failed to fetch backend.zip from SFTP."
                             exit 1
@@ -167,7 +169,7 @@ pipelines:
                         export DB_USER=psdbadmin
                         export DB_PASS=6%EOm@Te1sb19Th6
 
-                        DEPLOYMENT_TYPE=$(cat /home/joshi/deployment_type.txt)
+                        DEPLOYMENT_TYPE=$(cat deployment_type.txt)
 
                         if [ -z "$GO_APPROVED_BY" ]; then
                           echo "Manual approval not granted. Skipping database update."
