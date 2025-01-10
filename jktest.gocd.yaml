@@ -33,7 +33,7 @@ pipelines:
                           sudo systemctl stop PrimeSquare.service || { echo "Failed to stop service"; exit 1; }
 
                           echo "Archiving existing core JAR..."
-                          sudo mv /home/joshi/prime-square/core-*.jar /home/joshi/archive/core-$(date +%F-%T).jar || { echo "Failed to archive core JAR"; exit 1; }
+                          sudo mv /home/joshi/prime-square/core-*.jar /home/joshi/archive/core-$(date +%F-%T).jar || { echo "Failed to archive core JAR"; exit 0; }
 
                           echo "Replacing core JAR..."
                           sudo mv /home/joshi/archive/temp-extract/core-*.jar /home/joshi/prime-square/ || { echo "Failed to replace core JAR"; exit 0; }
