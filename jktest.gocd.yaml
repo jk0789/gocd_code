@@ -102,6 +102,7 @@ pipelines:
                           exit 0
                         fi
 
+
       - Regular-deployment:
           fetch_materials: false
           clean_workspace: false
@@ -112,26 +113,38 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - |
+                      - >
                         export BUILD_DIR=/home/joshi/builds
+
                         export BE_TARGET_DIR=/home/joshi/prime-square
+
                         export BE_ARCHIVE_DIR=/home/joshi/archive
+
                         export SFTP_HOST=172.16.7.116
+
                         export SFTP_USER=surya
+
                         export SFTP_KEY=/var/go/.ssh/id_rsa
+
                         export SFTP_UPLOADS_DIR=uploads
-                        
+
+
 
                         DEPLOYMENT_TYPE=$(cat deployment_type.txt)
+
                         if [ "$DEPLOYMENT_TYPE" == "REGULAR_DEPLOYMENT" ]; then
                           
                           echo "Accessing SFTP machine to fetch the backend zip file..."
 
                         sftp -o StrictHostKeyChecking=no -i /var/go/.ssh/id_rsa ${SFTP_USER}@${SFTP_HOST} <<EOF
+
                         cd ${SFTP_UPLOADS_DIR}
+
                         get ps_be_*.zip ${BUILD_DIR}
+
                         bye
-EOF
+
+                        EOF
 
 
                           if [ $? -ne 0 ]; then
@@ -151,6 +164,7 @@ EOF
                           echo "Skipping regular deployment."
                           exit 0
                         fi
+
 
       - Database-Update:
           fetch_materials: false
