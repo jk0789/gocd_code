@@ -25,6 +25,9 @@ pipelines:
                       - -c
                       - |
                         echo "Preparing environment..."
+                        export BUILD_DIR=/home/joshi/builds
+                        export BE_TARGET_DIR=/home/joshi/prime-square
+                        export BE_ARCHIVE_DIR=/home/joshi/archive
 
                         if [ -d "/home/joshi/prime-square" ]; then
                           echo "Found existing 'prime-square' directory. Proceeding with regular deployment..."
@@ -33,10 +36,7 @@ pipelines:
                           sudo systemctl stop PrimeSquare.service || { echo "Failed to stop service"; exit 1; }
 
                           echo "Archiving existing core JAR..."
-                          sudo mv /home/joshi/prime-square/core-*.jar /home/joshi/archive/core-$(date +%F-%T).jar || { echo "Failed to archive core JAR"; exit 0; }
-
-                          echo "Replacing core JAR..."
-                          sudo mv /home/joshi/archive/temp-extract/core-*.jar /home/joshi/prime-square/ || { echo "Failed to replace core JAR"; exit 0; }
+                          sudo mv /home/joshi/prime-square/core-*.jar /home/joshi/archive/core-$(date +%F-%T).jar || { echo "Failed to archive core JAR"; exit 1; }
 
                           echo "Preparing for Database Update..."
                           echo "REGULAR_DEPLOYMENT" > /home/joshi/deployment_type
@@ -45,52 +45,6 @@ pipelines:
                           echo "FRESH_DEPLOYMENT" > /home/joshi/deployment_type
                           exit 2  
                         fi
-
-      - Database-Update-Approval:
-          fetch_materials: false
-          clean_workspace: false
-          approval:
-            type: manual
-          jobs:
-            approve-database-update:
-              tasks:
-                - exec:
-                    command: /bin/bash
-                    arguments:
-                      - -c
-                      - |
-                        DEPLOYMENT_TYPE=$(cat /home/joshi/deployment_type)
-                        if [ "$DEPLOYMENT_TYPE" == "REGULAR_DEPLOYMENT" ]; then
-                          echo "Manual approval required for database update in regular deployment."
-                          exit 1
-                        else
-                          echo "Skipping manual approval for fresh deployment."
-                          exit 0
-                        fi
-
-      - Database-Update:
-          fetch_materials: false
-          clean_workspace: false
-          jobs:
-            update-database:
-              tasks:
-                - exec:
-                    command: /bin/bash
-                    arguments:
-                      - -c
-                      - |
-                        DEPLOYMENT_TYPE=$(cat /home/joshi/deployment_type)
-
-                        if [ "$DEPLOYMENT_TYPE" == "REGULAR_DEPLOYMENT" ]; then
-                          echo "Executing database scripts for regular deployment..."
-                          mysql < /home/joshi/prime-square/database-scripts/ddl_drop_schema_script.sql -u psdbadmin -p6%EOm@Te1sb19Th6 -h 172.16.7.115 || { echo "Failed to drop schema"; exit 1; }
-                          mysql < /home/joshi/prime-square/database-scripts/ddl_create_scripts.sql -u psdbadmin -p6%EOm@Te1sb19Th6 -h 172.16.7.115 || { echo "Failed to create schema"; exit 1; }
-                          mysql < /home/joshi/prime-square/database-scripts/dml_insert_scripts.sql -u psdbadmin -p6%EOm@Te1sb19Th6 -h 172.16.7.115 || { echo "Failed to insert data"; exit 1; }
-                          echo "Database update complete."
-                        else
-                          echo "Skipping database update for fresh deployment."
-                        fi
-
       - New-Deployment:
           fetch_materials: false
           clean_workspace: false
@@ -102,6 +56,11 @@ pipelines:
                     arguments:
                       - -c
                       - |
+                        
+                        export DB_SCRIPTS_DIR=/home/joshi/prime-square/database-scripts
+                        export DB_USER=psdbadmin
+                        export DB_PASS=6%EOm@Te1sb19Th6
+
                         DEPLOYMENT_TYPE=$(cat /home/joshi/deployment_type)
 
                         if [ "$DEPLOYMENT_TYPE" == "FRESH_DEPLOYMENT" ]; then
@@ -119,21 +78,120 @@ pipelines:
                           echo "Reloading systemd daemon..."
                           sudo systemctl daemon-reload || { echo "Failed to reload daemon"; exit 1; }
 
+                          echo "Enabling PrimeSquare.service..."
+                          sudo systemctl enable PrimeSquare.service || { echo "Failed to start service"; exit 1; }
+
+                          echo "Fresh deployment complete."
+                          
+                          echo "Giving execute permissions to database scripts..."
+                          sudo chmod -R +x "${DB_SCRIPTS_DIR}" || { echo "Failed to give execute permissions to database scripts"; exit 1; }
+  
+                          echo "Executing database scripts..."
+                          mysql < "${DB_SCRIPTS_DIR}/ddl_drop_schema_script.sql" -u ${DB_USER} -p${DB_PASS} -h 172.16.7.115 || { echo "Failed to execute ddl_drop_schema_script.sql"; exit 1; }
+                          mysql < "${DB_SCRIPTS_DIR}/idfc_primesquare_workflow_ddl_dml.sql" -u ${DB_USER} -p${DB_PASS} -h 172.16.7.115 || { echo "Failed to execute primesquare_workflow_ddl_dml.sql"; exit 1; }
+                          mysql < "${DB_SCRIPTS_DIR}/ddl_create_scripts.sql" -u ${DB_USER} -p${DB_PASS} -h 172.16.7.115 || { echo "Failed to execute ddl_create_scripts.sql"; exit 1; }
+                          mysql < "${DB_SCRIPTS_DIR}/dml_insert_scripts.sql" -u ${DB_USER} -p${DB_PASS} -h 172.16.7.115 || { echo "Failed to execute dml_insert_scripts.sql"; exit 1; }
+                          mysql < "${DB_SCRIPTS_DIR}/ps_index_create.sql" -u ${DB_USER} -p${DB_PASS} -h 172.16.7.115 || { echo "Failed to execute ps_index_create.sql"; exit 1; }
+
+                          echo "Database update for fresh deployment complete."
                           echo "Starting PrimeSquare.service..."
                           sudo systemctl start PrimeSquare.service || { echo "Failed to start service"; exit 1; }
 
-                          echo "Fresh deployment complete."
-
-                          echo "Executing database scripts for fresh deployment..."
-                          mysql < /home/joshi/prime-square/database-scripts/ddl_drop_schema_script.sql -u psdbadmin -p6%EOm@Te1sb19Th6 -h 172.16.7.115 || { echo "Failed to drop schema"; exit 1; }
-                          mysql < /home/joshi/prime-square/database-scripts/ddl_create_scripts.sql -u psdbadmin -p6%EOm@Te1sb19Th6 -h 172.16.7.115 || { echo "Failed to create schema"; exit 1; }
-                          mysql < /home/joshi/prime-square/database-scripts/dml_insert_scripts.sql -u psdbadmin -p6%EOm@Te1sb19Th6 -h 172.16.7.115 || { echo "Failed to insert data"; exit 1; }
-                          echo "Database update for fresh deployment complete."
                         else
                           echo "Skipping new deployment stage."
+                          exit 0
                         fi
 
-      - Service-Configuration:
+      - Regular-deployment:
+          fetch_materials: false
+          clean_workspace: false
+          jobs:
+            Regular-deployment:
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - |
+                        export BUILD_DIR=/home/joshi/builds
+                        export BE_TARGET_DIR=/home/joshi/prime-square
+                        export BE_ARCHIVE_DIR=/home/joshi/archive
+                        export SFTP_HOST=172.16.7.116
+                        export SFTP_USER=surya
+                        export SFTP_KEY=/var/go/.ssh/id_rsa
+                        export SFTP_UPLOADS_DIR=uploads
+                        
+
+                        DEPLOYMENT_TYPE=$(cat /home/joshi/deployment_type)
+                        if [ "$DEPLOYMENT_TYPE" == "REGULAR_DEPLOYMENT" ]; then
+                          
+                          echo "Accessing SFTP machine to fetch the backend zip file..."
+                          sftp -o StrictHostKeyChecking=no -i /var/go/.ssh/id_rsa ${SFTP_USER}@${SFTP_HOST} <<EOF
+                          cd ${SFTP_UPLOADS_DIR}
+                          get ps_be_*.zip ${BUILD_DIR}
+                          bye
+                          EOF
+                          if [ $? -ne 0 ]; then
+                            echo "Failed to fetch backend.zip from SFTP."
+                            exit 1
+                          fi
+                          
+                          echo "Unzipping the backend artifacts to BE_TARGET_DIR..."
+                          sudo unzip -o "${BUILD_DIR}/ps_be_*.zip" -d "${BE_TARGET_DIR}" || { echo "Failed to unzip backend.zip"; exit 1; }
+
+                          echo "Replacing core JAR..."
+                          sudo mv /home/joshi/archive/core-*.jar /home/joshi/prime-square/ || { echo "Failed to replace core JAR"; exit 0; }
+
+                          echo "Changing permissions of BE_TARGET_DIR to joshi:joshi..."
+                          sudo chown -R joshi:joshi "${BE_TARGET_DIR}" || { echo "Failed to change permissions of BE_TARGET_DIR"; exit 1; }
+                        else
+                          echo "Skipping regular deployment."
+                          exit 0
+                        fi
+
+      - Database-Update:
+          fetch_materials: false
+          clean_workspace: false
+          approval:
+            type: manual
+          jobs:
+            update-database:
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - |
+
+                        export DB_SCRIPTS_DIR=/home/joshi/prime-square/database-scripts
+                        export DB_USER=psdbadmin
+                        export DB_PASS=6%EOm@Te1sb19Th6
+
+                        DEPLOYMENT_TYPE=$(cat /home/joshi/deployment_type)
+
+                        if [ -z "$GO_APPROVED_BY" ]; then
+                          echo "Manual approval not granted. Skipping database update."
+                          echo "SKIP_DB_UPDATE=true" > /home/joshi/pipeline_flags
+                          exit 0
+                        else
+                          echo "Manual approval granted. Executing database update..."
+                          echo "SKIP_DB_UPDATE=false" > /home/joshi/pipeline_flags
+                        fi  
+
+                        if [ "$DEPLOYMENT_TYPE" == "REGULAR_DEPLOYMENT" ]; then
+                          echo "Executing database scripts for regular deployment..."
+                          mysql < /home/joshi/prime-square/database-scripts/ddl_drop_schema_script.sql -u psdbadmin -p6%EOm@Te1sb19Th6 -h 172.16.7.115 || { echo "Failed to drop schema"; exit 1; }
+                          mysql < "${DB_SCRIPTS_DIR}/idfc_primesquare_workflow_ddl_dml.sql" -u ${DB_USER} -p${DB_PASS} -h 172.16.7.115 || { echo "Failed to execute primesquare_workflow_ddl_dml.sql"; exit 1; }
+                          mysql < "${DB_SCRIPTS_DIR}/ddl_create_scripts.sql" -u ${DB_USER} -p${DB_PASS} -h 172.16.7.115 || { echo "Failed to execute ddl_create_scripts.sql"; exit 1; }
+                          mysql < "${DB_SCRIPTS_DIR}/dml_insert_scripts.sql" -u ${DB_USER} -p${DB_PASS} -h 172.16.7.115 || { echo "Failed to execute dml_insert_scripts.sql"; exit 1; }
+                          mysql < "${DB_SCRIPTS_DIR}/ps_index_create.sql" -u ${DB_USER} -p${DB_PASS} -h 172.16.7.115 || { echo "Failed to execute ps_index_create.sql"; exit 1; }
+
+                          echo "Database update complete."
+                        else
+                          echo "Skipping database update for regular deployment."
+                        fi
+
+      - Restarting service:
           fetch_materials: false
           clean_workspace: false
           jobs:
@@ -144,14 +202,19 @@ pipelines:
                     arguments:
                       - -c
                       - |
-                        echo "Configuring and restarting service..."
 
-                        echo "Reloading systemd daemon..."
-                        sudo systemctl daemon-reload || { echo "Failed to reload daemon"; exit 1; }
+                        if [ -f /home/joshi/pipeline_flags ]; then
+                            source /home/joshi/pipeline_flags
+                        fi
 
-                        echo "Starting PrimeSquare.service..."
-                        sudo systemctl start PrimeSquare.service || { echo "Failed to start service"; exit 1; }
-
+                        if [ "$SKIP_DB_UPDATE" == "true" ]; then
+                          echo "Database update was skipped. Proceeding with service restart..."
+                          sudo systemctl restart PrimeSquare.service || { echo "Failed to start service"; exit 1; }
+                        else
+                          echo "Database update completed. Proceeding with service restart..."
+                          sudo systemctl restart PrimeSquare.service || { echo "Failed to start service"; exit 1; }
+                        fi
+                        
                         echo "Service started successfully."
               resources:
                 - joshi                   
