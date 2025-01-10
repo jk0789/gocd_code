@@ -45,6 +45,7 @@ pipelines:
                           echo "FRESH_DEPLOYMENT" > deployment_type.txt                          
                           exit 0  
                         fi
+      
       - New-Deployment:
           fetch_materials: false
           clean_workspace: false
@@ -58,10 +59,14 @@ pipelines:
                       - |
                         
                         export DB_SCRIPTS_DIR=/home/joshi/prime-square/database-scripts
+
                         export DB_USER=psdbadmin
+
                         export DB_PASS=6%EOm@Te1sb19Th6
 
+
                         DEPLOYMENT_TYPE=$(cat deployment_type.txt)
+
 
                         if [ "$DEPLOYMENT_TYPE" == "FRESH_DEPLOYMENT" ]; then
                           echo "Fresh deployment detected. Setting up environment..."
@@ -69,9 +74,13 @@ pipelines:
                           echo "Creating 'prime-square' directory..."
                           sudo mkdir -p /home/joshi/prime-square || { echo "Failed to create target directory"; exit 1; }
                         sftp -o StrictHostKeyChecking=no -i /var/go/.ssh/id_rsa ${SFTP_USER}@${SFTP_HOST} <<EOF
+
                         cd ${SFTP_UPLOADS_DIR}
+
                         get ps_be_*.zip ${BUILD_DIR}
+
                         bye
+
                         EOF  
 
                           echo "Unzipping all contents to 'prime-square'..."
@@ -90,7 +99,7 @@ pipelines:
                           
                           echo "Giving execute permissions to database scripts..."
                           sudo chmod -R +x "${DB_SCRIPTS_DIR}" || { echo "Failed to give execute permissions to database scripts"; exit 1; }
-  
+
                           echo "Executing database scripts..."
                           mysql < "${DB_SCRIPTS_DIR}/ddl_drop_schema_script.sql" -u ${DB_USER} -p${DB_PASS} -h 172.16.7.115 || { echo "Failed to execute ddl_drop_schema_script.sql"; exit 1; }
                           mysql < "${DB_SCRIPTS_DIR}/idfc_primesquare_workflow_ddl_dml.sql" -u ${DB_USER} -p${DB_PASS} -h 172.16.7.115 || { echo "Failed to execute primesquare_workflow_ddl_dml.sql"; exit 1; }
@@ -106,7 +115,6 @@ pipelines:
                           echo "Skipping new deployment stage."
                           exit 0
                         fi
-
 
       - Regular-deployment:
           fetch_materials: false
