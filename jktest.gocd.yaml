@@ -191,11 +191,11 @@ pipelines:
                           echo "Skipping database update for regular deployment."
                         fi
 
-      - Restarting service:
+      - Restarting-service:
           fetch_materials: false
           clean_workspace: false
           jobs:
-            configure-and-start-service: 
+            start-service: 
               tasks:
                 - exec:
                     command: /bin/bash
