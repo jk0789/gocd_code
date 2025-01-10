@@ -68,6 +68,11 @@ pipelines:
 
                           echo "Creating 'prime-square' directory..."
                           sudo mkdir -p /home/joshi/prime-square || { echo "Failed to create target directory"; exit 1; }
+                        sftp -o StrictHostKeyChecking=no -i /var/go/.ssh/id_rsa ${SFTP_USER}@${SFTP_HOST} <<EOF
+                        cd ${SFTP_UPLOADS_DIR}
+                        get ps_be_*.zip ${BUILD_DIR}
+                        bye
+                        EOF  
 
                           echo "Unzipping all contents to 'prime-square'..."
                           sudo unzip -o /home/joshi/archive/ps_be_*.zip -d /home/joshi/prime-square || { echo "Failed to unzip contents"; exit 1; }
