@@ -30,7 +30,7 @@ pipelines:
                         export BE_ARCHIVE_DIR=/home/joshi/archive
 
                         if [ -d "/home/joshi/prime-square" ]; then
-                          echo "Found existing 'prime-square' directory. Proceeding with regular deployment..."
+                          {echo "Found existing 'prime-square' directory. Proceeding with regular deployment..."; exit 0;}
 
                           echo "Stopping PrimeSquare.service..."
                           sudo systemctl stop PrimeSquare.service || { echo "Failed to stop service"; exit 1; }
