@@ -39,10 +39,11 @@ pipelines:
                           sudo mv /home/joshi/prime-square/core-*.jar /home/joshi/archive/core-$(date +%F-%T).jar || { echo "Failed to archive core JAR"; exit 1; }
 
                           echo "Preparing for Database Update..."
-                          echo "REGULAR_DEPLOYMENT" > /home/joshi/deployment_type
+                          echo "REGULAR_DEPLOYMENT" > /home/joshi/deployment_type.txt
                         else
                           echo "No 'prime-square' directory found. Proceeding with fresh deployment..."
-                          echo "FRESH_DEPLOYMENT" > /home/joshi/deployment_type
+                          echo "FRESH_DEPLOYMENT" > /home/joshi/deployment_type.txt
+                          sudo chown -R joshi:joshi deployment_type.txt
                           exit 2  
                         fi
       - New-Deployment:
@@ -61,7 +62,7 @@ pipelines:
                         export DB_USER=psdbadmin
                         export DB_PASS=6%EOm@Te1sb19Th6
 
-                        DEPLOYMENT_TYPE=$(cat /home/joshi/deployment_type)
+                        DEPLOYMENT_TYPE=$(cat /home/joshi/deployment_type.txt)
 
                         if [ "$DEPLOYMENT_TYPE" == "FRESH_DEPLOYMENT" ]; then
                           echo "Fresh deployment detected. Setting up environment..."
@@ -122,7 +123,7 @@ pipelines:
                         export SFTP_UPLOADS_DIR=uploads
                         
 
-                        DEPLOYMENT_TYPE=$(cat /home/joshi/deployment_type)
+                        DEPLOYMENT_TYPE=$(cat /home/joshi/deployment_type.txt)
                         if [ "$DEPLOYMENT_TYPE" == "REGULAR_DEPLOYMENT" ]; then
                           
                           echo "Accessing SFTP machine to fetch the backend zip file..."
@@ -167,7 +168,7 @@ pipelines:
                         export DB_USER=psdbadmin
                         export DB_PASS=6%EOm@Te1sb19Th6
 
-                        DEPLOYMENT_TYPE=$(cat /home/joshi/deployment_type)
+                        DEPLOYMENT_TYPE=$(cat /home/joshi/deployment_type.txt)
 
                         if [ -z "$GO_APPROVED_BY" ]; then
                           echo "Manual approval not granted. Skipping database update."
