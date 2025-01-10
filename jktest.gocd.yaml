@@ -75,9 +75,13 @@ pipelines:
                           sudo mkdir -p /home/joshi/prime-square || { echo "Failed to create target directory"; exit 1; }
 
                           sftp -o StrictHostKeyChecking=no -i /var/go/.ssh/id_rsa ${SFTP_USER}@${SFTP_HOST} <<EOF
+                          
                           cd ${SFTP_UPLOADS_DIR}
+                          
                           get ps_be_*.zip ${BUILD_DIR}
+                          
                           bye
+                          
                           EOF
 
                           if [ $? -ne 0 ]; then
@@ -198,7 +202,7 @@ pipelines:
                         get ps_be_*.zip ${BUILD_DIR}
                         bye
                         EOF
-                        
+
                         if [ $? -ne 0 ]; then
                           echo "Failed to fetch backend.zip from SFTP."
                           exit 1
