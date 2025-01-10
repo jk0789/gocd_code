@@ -39,12 +39,10 @@ pipelines:
                           sudo mv /home/joshi/prime-square/core-*.jar /home/joshi/archive/core-$(date +%F-%T).jar || { echo "Failed to archive core JAR"; exit 1; }
 
                           echo "Preparing for Database Update..."
-                          cd
-                          echo "REGULAR_DEPLOYMENT" > /home/joshi/deployment_type.txt
+                          echo "REGULAR_DEPLOYMENT" > deployment_type.txt
                         else
                           echo "No 'prime-square' directory found. Proceeding with fresh deployment..."
-                          cd
-                          echo "FRESH_DEPLOYMENT" > /home/joshi/deployment_type.txt                          
+                          echo "FRESH_DEPLOYMENT" > deployment_type.txt                          
                           exit 2  
                         fi
       - New-Deployment:
