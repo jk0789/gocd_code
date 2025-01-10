@@ -12,24 +12,12 @@ pipelines:
         auto_update: true
         branch: main
     stages:
-      - Manual-Approval:
-          fetch_materials: false
-          clean_workspace: false
-          approval:
-            type: manual
-          jobs:
-            - name: decide-deployment
-              tasks:
-                - exec:
-                    command: echo
-                    arguments:
-                      - "Manual approval required. Proceeding to deployment stages."
-
       - Preparation:
           fetch_materials: true
           clean_workspace: false
           jobs:
-            - name: prepare-environment
+            prepare-environment: 
+              timeout: 0
               tasks:
                 - exec:
                     command: /bin/bash
@@ -64,7 +52,7 @@ pipelines:
           approval:
             type: manual
           jobs:
-            - name: approve-database-update
+            approve-database-update:
               tasks:
                 - exec:
                     command: /bin/bash
@@ -84,7 +72,7 @@ pipelines:
           fetch_materials: false
           clean_workspace: false
           jobs:
-            - name: update-database
+            update-database:
               tasks:
                 - exec:
                     command: /bin/bash
@@ -107,7 +95,7 @@ pipelines:
           fetch_materials: false
           clean_workspace: false
           jobs:
-            - name: fresh-deployment
+            fresh-deployment:
               tasks:
                 - exec:
                     command: /bin/bash
@@ -149,7 +137,7 @@ pipelines:
           fetch_materials: false
           clean_workspace: false
           jobs:
-            - name: configure-and-start-service
+            configure-and-start-service: 
               tasks:
                 - exec:
                     command: /bin/bash
