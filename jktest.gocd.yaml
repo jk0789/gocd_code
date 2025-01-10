@@ -70,7 +70,7 @@ pipelines:
                           sudo mkdir -p /home/joshi/prime-square || { echo "Failed to create target directory"; exit 1; }
 
                           echo "Unzipping all contents to 'prime-square'..."
-                          sudo unzip -o /home/joshi/archive/temp-extract/*.zip -d /home/joshi/prime-square || { echo "Failed to unzip contents"; exit 1; }
+                          sudo unzip -o /home/joshi/archive/ps_be_*.zip -d /home/joshi/prime-square || { echo "Failed to unzip contents"; exit 1; }
 
                           echo "Copying service file to /etc/systemd/system/..."
                           sudo cp /home/joshi/prime-square/service/PrimeSquare.service /etc/systemd/system/ || { echo "Failed to copy service file"; exit 1; }
