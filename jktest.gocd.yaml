@@ -56,7 +56,7 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - |
+                      - >
                         
                         export DB_SCRIPTS_DIR=/home/joshi/prime-square/database-scripts
 
@@ -72,7 +72,9 @@ pipelines:
                           echo "Fresh deployment detected. Setting up environment..."
 
                           echo "Creating 'prime-square' directory..."
+                          
                           sudo mkdir -p /home/joshi/prime-square || { echo "Failed to create target directory"; exit 1; }
+
                         sftp -o StrictHostKeyChecking=no -i /var/go/.ssh/id_rsa ${SFTP_USER}@${SFTP_HOST} <<EOF
 
                         cd ${SFTP_UPLOADS_DIR}
