@@ -46,7 +46,8 @@ pipelines:
                           exit 0  
                         fi
       
-      - New-Deployment:
+
+      - New-Deployment: 
           fetch_materials: false
           clean_workspace: false
           jobs:
@@ -56,8 +57,7 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - >
-                        
+                      - |
                         export DB_SCRIPTS_DIR=/home/joshi/prime-square/database-scripts
 
                         export DB_USER=psdbadmin
@@ -72,18 +72,18 @@ pipelines:
                           echo "Fresh deployment detected. Setting up environment..."
 
                           echo "Creating 'prime-square' directory..."
-                          
                           sudo mkdir -p /home/joshi/prime-square || { echo "Failed to create target directory"; exit 1; }
 
-                        sftp -o StrictHostKeyChecking=no -i /var/go/.ssh/id_rsa ${SFTP_USER}@${SFTP_HOST} <<EOF
+                          sftp -o StrictHostKeyChecking=no -i /var/go/.ssh/id_rsa ${SFTP_USER}@${SFTP_HOST} <<EOF
+                          cd ${SFTP_UPLOADS_DIR}
+                          get ps_be_*.zip ${BUILD_DIR}
+                          bye
+                          EOF
 
-                        cd ${SFTP_UPLOADS_DIR}
-
-                        get ps_be_*.zip ${BUILD_DIR}
-
-                        bye
-
-                        EOF  
+                          if [ $? -ne 0 ]; then
+                            echo "Failed to fetch backend.zip from SFTP."
+                            exit 1
+                          fi
 
                           echo "Unzipping all contents to 'prime-square'..."
                           sudo unzip -o /home/joshi/archive/ps_be_*.zip -d /home/joshi/prime-square || { echo "Failed to unzip contents"; exit 1; }
@@ -98,7 +98,7 @@ pipelines:
                           sudo systemctl enable PrimeSquare.service || { echo "Failed to start service"; exit 1; }
 
                           echo "Fresh deployment complete."
-                          
+
                           echo "Giving execute permissions to database scripts..."
                           sudo chmod -R +x "${DB_SCRIPTS_DIR}" || { echo "Failed to give execute permissions to database scripts"; exit 1; }
 
@@ -117,6 +117,7 @@ pipelines:
                           echo "Skipping new deployment stage."
                           exit 0
                         fi
+
 
       - Regular-deployment:
           fetch_materials: false
