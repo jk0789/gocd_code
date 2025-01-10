@@ -42,9 +42,8 @@ pipelines:
                           echo "REGULAR_DEPLOYMENT" > /home/joshi/deployment_type.txt
                         else
                           echo "No 'prime-square' directory found. Proceeding with fresh deployment..."
-                          echo "FRESH_DEPLOYMENT" > /home/joshi/deployment_type.txt
-                          sudo chown -R joshi:joshi deployment_type.txt
-                          sudo chmod 777 deployment_type.txt
+                          cd
+                          echo "FRESH_DEPLOYMENT" > /home/joshi/deployment_type.txt                          
                           exit 2  
                         fi
       - New-Deployment:
