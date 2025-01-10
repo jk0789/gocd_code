@@ -129,7 +129,7 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - >
+                      - |
                         export BUILD_DIR=/home/joshi/builds
 
                         export BE_TARGET_DIR=/home/joshi/prime-square
