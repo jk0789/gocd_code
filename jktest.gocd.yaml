@@ -149,8 +149,8 @@ pipelines:
                 DB_SCRIPTS_DIR: /home/joshi/prime-square/database-scripts
                 DB_USER: psdbadmin
                 DB_PASS: 6%EOm@Te1sb19Th6
-                SFTP_HOST: 172.16.7.116
-                SFTP_USER: surya
+                SFTP_HOST: 172.16.7.110
+                SFTP_USER: sftp_gocd
                 SFTP_UPLOADS_DIR: uploads
               tasks:
                 - exec:
