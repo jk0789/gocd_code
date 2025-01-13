@@ -152,6 +152,7 @@ pipelines:
                       - -c
                       - |
                         echo "Exporting environment variables..."
+                        set -x
                         export BUILD_DIR=/home/joshi/builds
                         export BE_TARGET_DIR=/home/joshi/prime-square                       
                         export BE_ARCHIVE_DIR=/home/joshi/archive
