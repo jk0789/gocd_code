@@ -68,6 +68,8 @@ pipelines:
                         export SFTP_USER=sftp_gocd
                         export SFTP_KEY=/var/go/.ssh/id_rsa
                         export SFTP_UPLOADS_DIR=uploads
+                        export BUILD_DIR=/home/joshi/builds
+
 
 
                         DEPLOYMENT_TYPE=$(cat deployment_type.txt)
