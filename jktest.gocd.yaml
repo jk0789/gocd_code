@@ -35,9 +35,6 @@ pipelines:
                           echo "Stopping PrimeSquare.service..."
                           sudo systemctl stop PrimeSquare.service || { echo "Failed to stop service"; exit 1; }
 
-                          echo "Archiving existing core JAR..."
-                          sudo mv /home/joshi/prime-square/core-*.jar /home/joshi/archive/core-$(date +%F-%T).jar || { echo "Failed to archive core JAR"; exit 1; }
-
                           echo "Preparing for Database Update..."
                           echo "REGULAR_DEPLOYMENT" > /var/go/deployment_type.txt
                         else
@@ -216,24 +213,7 @@ pipelines:
                           else
                           echo "No existing ps_be_*.zip files found. Proceeding..."
                           fi
-  
-                        echo "Accessing SFTP machine to fetch the backend zip file..."
-
-                        sftp -o StrictHostKeyChecking=no -i /var/go/.ssh/id_rsa ${SFTP_USER}@${SFTP_HOST} <<EOF
-                        
-                        cd ${SFTP_UPLOADS_DIR}
-                        
-                        get ps_be_*.zip ${BUILD_DIR}
-                        
-                        bye
-                        
-                        EOF
-
-                          if [ $? -ne 0 ]; then
-                            echo "Failed to fetch backend.zip from SFTP."
-                            exit 1
-                          fi
-  
+                           
                           echo "Checking and creating BE_TARGET_DIR if needed..."
                           if [ ! -d "${BE_TARGET_DIR}" ]; then
                             echo "BE_TARGET_DIR does not exist. Creating ${BE_TARGET_DIR}..."
