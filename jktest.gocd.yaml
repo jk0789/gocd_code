@@ -64,8 +64,15 @@ pipelines:
 
                         export DB_PASS=6%EOm@Te1sb19Th6
 
+                        export SFTP_HOST=172.16.7.110
+                        export SFTP_USER=sftp_gocd
+                        export SFTP_KEY=/var/go/.ssh/id_rsa
+                        export SFTP_UPLOADS_DIR=uploads
+
 
                         DEPLOYMENT_TYPE=$(cat deployment_type.txt)
+
+
 
 
                         if [ "$DEPLOYMENT_TYPE" == "FRESH_DEPLOYMENT" ]; then
