@@ -152,7 +152,7 @@ pipelines:
                       - -c
                       - |
                         echo "Exporting environment variables..."
-                        set -x
+                        
                         export BUILD_DIR=/home/joshi/builds
                         export BE_TARGET_DIR=/home/joshi/prime-square                       
                         export BE_ARCHIVE_DIR=/home/joshi/archive
@@ -277,7 +277,9 @@ pipelines:
                           sudo systemctl daemon-reload || { echo "Failed to reload systemd daemon"; exit 1; }
   
                           echo "Deployment complete."
+                        else  
                           echo "Approve the Database-Update stage for recreation of DB" 
+                        fi  
 
 
       - Database-Update:
