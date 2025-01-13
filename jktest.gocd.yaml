@@ -39,10 +39,10 @@ pipelines:
                           sudo mv /home/joshi/prime-square/core-*.jar /home/joshi/archive/core-$(date +%F-%T).jar || { echo "Failed to archive core JAR"; exit 1; }
 
                           echo "Preparing for Database Update..."
-                          echo "REGULAR_DEPLOYMENT" > deployment_type.txt
+                          echo "REGULAR_DEPLOYMENT" > /var/go/deployment_type.txt
                         else
                           echo "No 'prime-square' directory found. Proceeding with fresh deployment..."
-                          echo "FRESH_DEPLOYMENT" > deployment_type.txt                          
+                          echo "FRESH_DEPLOYMENT" > /var/go/deployment_type.txt                          
                           exit 0  
                         fi
       
@@ -70,12 +70,7 @@ pipelines:
                         export SFTP_UPLOADS_DIR=uploads
                         export BUILD_DIR=/home/joshi/builds
 
-
-
-                        DEPLOYMENT_TYPE=$(cat deployment_type.txt)
-
-
-
+                        DEPLOYMENT_TYPE=$(cat /var/go/deployment_type.txt)
 
                         if [ "$DEPLOYMENT_TYPE" == "FRESH_DEPLOYMENT" ]; then
                           echo "Fresh deployment detected. Setting up environment..."
@@ -170,7 +165,7 @@ pipelines:
                         export SFTP_KEY=/var/go/.ssh/id_rsa
                         export SFTP_UPLOADS_DIR=uploads
 
-                        DEPLOYMENT_TYPE=$(cat deployment_type.txt)
+                        DEPLOYMENT_TYPE=$(cat /var/go/deployment_type.txt)
 
                         if [ "$DEPLOYMENT_TYPE" == "REGULAR_DEPLOYMENT" ]; then
                           echo "Regular deployment detected. Setting up environment..."
@@ -206,11 +201,11 @@ pipelines:
                           fi
   
                           echo "Accessing SFTP machine to fetch the backend zip file..."
-                          sftp -o StrictHostKeyChecking=no -i /var/go/.ssh/id_rsa ${SFTP_USER}@${SFTP_HOST} <<EOF
-                          cd ${SFTP_UPLOADS_DIR}
-                          get ps_be_*.zip ${BUILD_DIR}
-                          bye
-                          EOF
+                        sftp -o StrictHostKeyChecking=no -i /var/go/.ssh/id_rsa ${SFTP_USER}@${SFTP_HOST} <<EOF
+                        cd ${SFTP_UPLOADS_DIR}
+                        get ps_be_*.zip ${BUILD_DIR}
+                        bye
+                        EOF
 
                           if [ $? -ne 0 ]; then
                             echo "Failed to fetch backend.zip from SFTP."
@@ -281,7 +276,7 @@ pipelines:
                         export DB_USER=psdbadmin
                         export DB_PASS=6%EOm@Te1sb19Th6
 
-                        DEPLOYMENT_TYPE=$(cat deployment_type.txt)
+                        DEPLOYMENT_TYPE=$(cat /var/go/deployment_type.txt)
 
                         if [ -z "$GO_APPROVED_BY" ]; then
                           echo "Manual approval not granted. Skipping database update."
