@@ -99,7 +99,7 @@ pipelines:
                           fi
 
                           echo "Unzipping all contents to 'prime-square'..."
-                          sudo unzip -o /home/joshi/archive/ps_be_*.zip -d /home/joshi/prime-square || { echo "Failed to unzip contents"; exit 1; }
+                          sudo unzip -o /home/joshi/builds/ps_be_*.zip -d /home/joshi/prime-square || { echo "Failed to unzip contents"; exit 1; }
 
                           echo "Copying service file to /etc/systemd/system/..."
                           sudo cp /home/joshi/prime-square/service/PrimeSquare.service /etc/systemd/system/ || { echo "Failed to copy service file"; exit 1; }
@@ -160,18 +160,15 @@ pipelines:
                       - |
                         echo "Exporting environment variables..."
                         export BUILD_DIR=/home/joshi/builds
-                        export BE_TARGET_DIR=/home/joshi/prime-square
-                        export UI_TARGET_DIR=/var/www/html
+                        export BE_TARGET_DIR=/home/joshi/prime-square                       
                         export BE_ARCHIVE_DIR=/home/joshi/archive
-                        export UI_ARCHIVE_DIR=/home/joshi/ui-archive
                         export BE_TEMP_DIR=${BE_ARCHIVE_DIR}/temp-extract
-                        export UI_TEMP_DIR=${UI_ARCHIVE_DIR}/temp-extract
                         export SERVICE=PrimeSquare.service
                         export DB_SCRIPTS_DIR=/home/joshi/prime-square/database-scripts
                         export DB_USER=psdbadmin
                         export DB_PASS=6%EOm@Te1sb19Th6
-                        export SFTP_HOST=172.16.7.116
-                        export SFTP_USER=surya
+                        export SFTP_HOST=172.16.7.110
+                        export SFTP_USER=sftp_gocd
                         export SFTP_KEY=/var/go/.ssh/id_rsa
                         export SFTP_UPLOADS_DIR=uploads
 
