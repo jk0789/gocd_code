@@ -257,12 +257,16 @@ pipelines:
                           sudo systemctl daemon-reload || { echo "Failed to reload systemd daemon"; exit 1; }
   
                           echo "Deployment complete."
+                          echo "Enabling the service"
+                          sudo systemctl enable PrimeSquare.service
+                          echo "Starting the service"
+                          sudo systemctl start PrimeSquare.service  
                         else  
-                          echo "Approve the Database-Update stage for recreation of DB" 
+                          echo "Approve the Database-recreation-Restarting-service stage for recreation of DB and restarting the service" 
                         fi  
 
 
-      - Database-Update:
+      - Database-recreation-Restarting-service:
           fetch_materials: false
           clean_workspace: false
           approval:
@@ -282,56 +286,22 @@ pipelines:
 
                         DEPLOYMENT_TYPE=$(cat /var/go/deployment_type.txt)
 
-                        if [ -z "$GO_APPROVED_BY" ]; then
-                          echo "Manual approval not granted. Skipping database update."
-                          echo "SKIP_DB_UPDATE=true" > /home/joshi/pipeline_flags
-                          exit 0
-                        else
-                          echo "Manual approval granted. Executing database update..."
-                          echo "SKIP_DB_UPDATE=false" > /home/joshi/pipeline_flags
-                        fi  
-                        
+                                    
                         echo "Giving execute permissions to database scripts..."
                         sudo chmod -R +x "${DB_SCRIPTS_DIR}" || { echo "Failed to give execute permissions to database scripts"; exit 1; }
                         
-                        if [ "$DEPLOYMENT_TYPE" == "REGULAR_DEPLOYMENT" ]; then
-                          echo "Executing database scripts for regular deployment..."
-                          mysql < /home/joshi/prime-square/database-scripts/ddl_drop_schema_script.sql -u psdbadmin -p6%EOm@Te1sb19Th6 -h 172.16.7.115 || { echo "Failed to drop schema"; exit 1; }
-                          mysql < "${DB_SCRIPTS_DIR}/idfc_primesquare_workflow_ddl_dml.sql" -u ${DB_USER} -p${DB_PASS} -h 172.16.7.115 || { echo "Failed to execute primesquare_workflow_ddl_dml.sql"; exit 1; }
-                          mysql < "${DB_SCRIPTS_DIR}/ddl_create_scripts.sql" -u ${DB_USER} -p${DB_PASS} -h 172.16.7.115 || { echo "Failed to execute ddl_create_scripts.sql"; exit 1; }
-                          mysql < "${DB_SCRIPTS_DIR}/dml_insert_scripts.sql" -u ${DB_USER} -p${DB_PASS} -h 172.16.7.115 || { echo "Failed to execute dml_insert_scripts.sql"; exit 1; }
-                          mysql < "${DB_SCRIPTS_DIR}/ps_index_create.sql" -u ${DB_USER} -p${DB_PASS} -h 172.16.7.115 || { echo "Failed to execute ps_index_create.sql"; exit 1; }
-
-                          echo "Database update complete."
-                        else
-                          echo "Skipping database update for regular deployment."
-                        fi
-
-      - Restarting-service:
-          fetch_materials: false
-          clean_workspace: false
-          jobs:
-            start-service: 
-              tasks:
-                - exec:
-                    command: /bin/bash
-                    arguments:
-                      - -c
-                      - |
-
-                        if [ -f /home/joshi/pipeline_flags ]; then
-                            source /home/joshi/pipeline_flags
-                        fi
-
-                        if [ "$SKIP_DB_UPDATE" == "true" ]; then
-                          echo "Database update was skipped. Proceeding with service restart..."
-                          sudo systemctl restart PrimeSquare.service || { echo "Failed to start service"; exit 1; }
-                        else
-                          echo "Database update completed. Proceeding with service restart..."
-                          sudo systemctl restart PrimeSquare.service || { echo "Failed to start service"; exit 1; }
-                        fi
                         
-                        echo "Service started successfully."
+                        echo "Executing database scripts for regular deployment..."
+                        mysql < /home/joshi/prime-square/database-scripts/ddl_drop_schema_script.sql -u psdbadmin -p6%EOm@Te1sb19Th6 -h 172.16.7.115 || { echo "Failed to drop schema"; exit 1; }
+                        mysql < "${DB_SCRIPTS_DIR}/idfc_primesquare_workflow_ddl_dml.sql" -u ${DB_USER} -p${DB_PASS} -h 172.16.7.115 || { echo "Failed to execute primesquare_workflow_ddl_dml.sql"; exit 1; }
+                        mysql < "${DB_SCRIPTS_DIR}/ddl_create_scripts.sql" -u ${DB_USER} -p${DB_PASS} -h 172.16.7.115 || { echo "Failed to execute ddl_create_scripts.sql"; exit 1; }
+                        mysql < "${DB_SCRIPTS_DIR}/dml_insert_scripts.sql" -u ${DB_USER} -p${DB_PASS} -h 172.16.7.115 || { echo "Failed to execute dml_insert_scripts.sql"; exit 1; }
+                        mysql < "${DB_SCRIPTS_DIR}/ps_index_create.sql" -u ${DB_USER} -p${DB_PASS} -h 172.16.7.115 || { echo "Failed to execute ps_index_create.sql"; exit 1; }
+
+                        echo "Database update complete."
+                        echo "Database update is completed. Proceeding with service restart..."
+                        sudo systemctl restart PrimeSquare.service || { echo "Failed to start service"; exit 1; }
+                        
               resources:
                 - joshi                   
 environments:
