@@ -81,15 +81,15 @@ pipelines:
                           echo "Creating 'prime-square' directory..."
                           sudo mkdir -p /home/joshi/prime-square || { echo "Failed to create target directory"; exit 1; }
 
-                          sftp -o StrictHostKeyChecking=no -i /var/go/.ssh/id_rsa ${SFTP_USER}@${SFTP_HOST} <<EOF
+                        sftp -o StrictHostKeyChecking=no -i /var/go/.ssh/id_rsa ${SFTP_USER}@${SFTP_HOST} <<EOF
                           
-                          cd ${SFTP_UPLOADS_DIR}
+                        cd ${SFTP_UPLOADS_DIR}
                           
-                          get ps_be_*.zip ${BUILD_DIR}
+                        get ps_be_*.zip ${BUILD_DIR}
                           
-                          bye
+                        bye
                           
-                          EOF
+                        EOF
 
                           if [ $? -ne 0 ]; then
                             echo "Failed to fetch backend.zip from SFTP."
@@ -172,6 +172,11 @@ pipelines:
                         export SFTP_USER=surya
                         export SFTP_KEY=/var/go/.ssh/id_rsa
                         export SFTP_UPLOADS_DIR=uploads
+
+                        DEPLOYMENT_TYPE=$(cat deployment_type.txt)
+
+                        if [ "$DEPLOYMENT_TYPE" == "REGULAR_DEPLOYMENT" ]; then
+                          echo "Regular deployment detected. Setting up environment..."
 
                         echo "Checking if service ${SERVICE} exists..."
                         if [ -f /etc/systemd/system/${SERVICE} ]; then
