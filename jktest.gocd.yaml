@@ -263,6 +263,7 @@ pipelines:
                           sudo systemctl start PrimeSquare.service  
                         else  
                           echo "Approve the Database-recreation-Restarting-service stage for recreation of DB and restarting the service" 
+                          exit 0  
                         fi  
 
 
